@@ -1,7 +1,5 @@
-from sqlalchemy.testing.schema import mapped_column
-
 from app.db.session import Base
-from sqlalchemy import Column, Integer, String, ForeignKey, Table
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 
 
@@ -10,5 +8,8 @@ class Team(Base):
 
     title: Mapped[str]
     case_id: Mapped[int] = mapped_column(ForeignKey("cases.id"))
-    workspace_link: Mapped[str]
-    final_mark = Mapped[int | 0]
+    workspace_link: Mapped[str | None]
+    final_mark: Mapped[int] = mapped_column(default=0)
+
+    team_memberships = relationship("TeamMembership", back_populates="team")
+    checkpoints = relationship("Checkpoint", back_populates="team")

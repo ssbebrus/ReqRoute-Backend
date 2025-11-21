@@ -1,8 +1,9 @@
 from app.db.session import Base
 import enum
 from datetime import date
-from sqlalchemy import Column, Integer, Enum, Date
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Enum
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 
 class SeasonEnum(str, enum.Enum):
     autumn = "autumn"
@@ -15,3 +16,5 @@ class Term(Base):
     end_date: Mapped[date | None]
     year: Mapped[int]
     season: Mapped[SeasonEnum] = mapped_column(Enum(SeasonEnum), nullable=False)
+
+    cases = relationship("Case", back_populates="term")

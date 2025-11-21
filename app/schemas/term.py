@@ -13,7 +13,10 @@ class TermCreate(TermBase):
     pass
 
 class TermUpdate(TermBase):
-    pass
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    year: Optional[int] = None
+    season: Optional[SeasonEnum] = None
 
 class TermRead(TermBase):
     id: int

@@ -8,6 +8,14 @@ async def get_all_cases(db: AsyncSession):
     result = await db.execute(select(Case))
     return result.scalars().all()
 
+async def get_all_cases_on_term(db: AsyncSession, term_id: int):
+    result = await db.execute(select(Case).where(Case.term_id == term_id))
+    return result.scalars().all()
+
+async def get_all_cases_on_user(db: AsyncSession, user_id: int):
+    result = await db.execute(select(Case).where(Case.user_id == user_id))
+    return result.scalars().all()
+
 async def get_case(db: AsyncSession, case_id: int):
     result = await db.execute(select(Case).where(Case.id == case_id))
     return result.scalar_one_or_none()

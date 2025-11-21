@@ -1,9 +1,9 @@
 from app.db.session import Base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship, Mapped
 
 
 class Student(Base):
-    __tablename__ = "Students"
+    __tablename__ = "students"
 
-    id = Column(Integer, primary_key=True, index=True)
-    full_name = Column(String(255), nullable=False)
+    full_name: Mapped[str]
+    team_memberships = relationship("TeamMembership", back_populates="student")

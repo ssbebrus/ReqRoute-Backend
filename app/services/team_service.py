@@ -2,10 +2,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.models.team import Team
+
 from app.schemas.team import TeamCreate, TeamUpdate
 
 async def get_all_teams(db: AsyncSession):
     result = await db.execute(select(Team))
+    return result.scalars().all()
+
+async def get_all_teams_on_case(db: AsyncSession, case_id: int):
+    result = await db.execute(select(Team).where(Team.case_id == case_id))
     return result.scalars().all()
 
 async def get_team(db: AsyncSession, team_id: int):

@@ -1,14 +1,11 @@
-from sqlalchemy import Integer
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncAttrs
-from sqlalchemy.orm import declarative_base, DeclarativeBase, mapped_column, Mapped
+from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
 from app.core.config import settings
 
-class ModelBase(DeclarativeBase, AsyncAttrs):
+class Base(DeclarativeBase, AsyncAttrs):
     __abstract__ = True
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-
-Base = ModelBase()
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
 engine = create_async_engine(settings.DATABASE_URL)
 

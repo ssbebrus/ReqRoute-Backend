@@ -4,17 +4,28 @@ from app.db.session import get_session
 from app.schemas.case import CaseCreate, CaseUpdate, CaseRead
 from app.services.case_service import (
     get_all_cases,
+    get_all_cases_on_term,
+    get_all_cases_on_user,
     get_case,
     create_case,
     update_case,
     delete_case
 )
+import app.models
 
 router = APIRouter()
 
 @router.get("/", response_model=list[CaseRead])
 async def list_cases(db: AsyncSession = Depends(get_session)):
     return await get_all_cases(db)
+
+@router.get("/user/{user_id}", response_model=list[CaseRead])
+async def list_cases_on_user(user_id: int, db: AsyncSession = Depends(get_session)):
+    return await get_all_cases_on_user(db, user_id)
+
+@router.get("/term/{term_id}", response_model=list[CaseRead])
+async def list_cases_on_user(term_id: int, db: AsyncSession = Depends(get_session)):
+    return await get_all_cases_on_term(db, term_id)
 
 @router.get("/{case_id}", response_model=CaseRead)
 async def read_case(case_id: int, db: AsyncSession = Depends(get_session)):

@@ -9,6 +9,7 @@ from app.services.term_service import (
     update_term,
     delete_term
 )
+import app.models
 
 router = APIRouter()
 

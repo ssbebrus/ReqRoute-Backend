@@ -4,17 +4,23 @@ from app.db.session import get_session
 from app.schemas.team import TeamCreate, TeamUpdate, TeamRead
 from app.services.team_service import (
     get_all_teams,
+    get_all_teams_on_case,
     get_team,
     create_team,
     update_team,
     delete_team
 )
+import app.models
 
 router = APIRouter()
 
 @router.get("/", response_model=list[TeamRead])
 async def list_teams(db: AsyncSession = Depends(get_session)):
     return await get_all_teams(db)
+
+@router.get("/case/{case_id}", response_model=list[TeamRead])
+async def list_teams_on_case(case_id: int, db: AsyncSession = Depends(get_session)):
+    return await get_all_teams_on_case(db, case_id)
 
 @router.get("/{team_id}", response_model=TeamRead)
 async def read_team(team_id: int, db: AsyncSession = Depends(get_session)):
