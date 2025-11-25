@@ -7,7 +7,7 @@ class Base(DeclarativeBase, AsyncAttrs):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
-engine = create_async_engine(settings.DATABASE_URL)
+engine = create_async_engine(settings.database_url)
 
 SessionLocal = async_sessionmaker(
     bind=engine,
