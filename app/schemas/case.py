@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from app.models.case import CaseStatus
 
 class CaseBase(BaseModel):
@@ -20,5 +20,4 @@ class CaseUpdate(BaseModel):
 class CaseRead(CaseBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

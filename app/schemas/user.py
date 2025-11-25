@@ -1,5 +1,6 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
 
 class UserBase(BaseModel):
     full_name: str
@@ -15,5 +16,4 @@ class UserUpdate(UserBase):
 class UserRead(UserBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
