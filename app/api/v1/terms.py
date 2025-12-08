@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_session
+from app.schemas.paginated import PaginatedResponse
 from app.schemas.term import TermCreate, TermUpdate, TermRead
 from app.services.term_service import (
-    get_all_terms,
+    get_terms_filtered,
     get_term,
     create_term,
     update_term,
@@ -13,9 +14,9 @@ import app.models
 
 router = APIRouter()
 
-@router.get("/", response_model=list[TermRead])
-async def list_terms(db: AsyncSession = Depends(get_session)):
-    return await get_all_terms(db)
+@router.get("/", response_model=PaginatedResponse[TermRead])
+async def list_terms(request: Request, db: AsyncSession = Depends(get_session)):
+    return await get_terms_filtered(db, dict(request.query_params))
 
 @router.get("/{term_id}", response_model=TermRead)
 async def read_term(term_id: int, db: AsyncSession = Depends(get_session)):

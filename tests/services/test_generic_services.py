@@ -78,27 +78,6 @@ async def test_create_entities_share_same_contract(mock_session, create_fn, mode
     mock_session.reset_mock()
 
 
-GET_ALL_SCENARIOS = [
-    (case_service.get_all_cases, Case(term_id=1, user_id=2, title="Case", description=None)),
-    (checkpoint_service.get_all_checkpoints, Checkpoint(team_id=1, number=2, date=None, project_state=None, mark=10, video_link=None, presentation_link=None, university_mark=None, university_comment=None)),
-    (team_service.get_all_teams, Team(title="Crew", case_id=1, workspace_link=None, final_mark=0)),
-    (term_service.get_all_terms, Term(start_date=None, end_date=None, year=2024, season=SeasonEnum.spring)),
-    (student_service.get_all_students, Student(full_name="Bob")),
-]
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("getter, sample", GET_ALL_SCENARIOS)
-async def test_get_all_entities_return_scalar_lists(mock_session, result_stub, getter, sample):
-    mock_session.execute.return_value = result_stub([sample])
-
-    rows = await getter(mock_session)
-
-    assert rows == [sample]
-    mock_session.execute.assert_awaited_once()
-    mock_session.execute.reset_mock()
-
-
 UPDATE_SCENARIOS = [
     (case_service, "update_case", "get_case", CaseUpdate(title="Updated")),
     (checkpoint_service, "update_checkpoint", "get_checkpoint", CheckpointUpdate(mark=9)),
@@ -218,36 +197,3 @@ async def test_delete_returns_none_when_not_found(monkeypatch, mock_session, mod
     assert deleted is None
     mock_session.delete.assert_not_called()
     assert mock_session.commit.await_count == 0
-
-
-FILTER_SCENARIOS = [
-    (case_service.get_all_cases_on_term, "term_id", 1, Case(term_id=1, user_id=2, title="Case 1", description=None)),
-    (case_service.get_all_cases_on_user, "user_id", 5, Case(term_id=1, user_id=5, title="Case 2", description=None)),
-    (team_service.get_all_teams_on_case, "case_id", 3, Team(title="Team 1", case_id=3, workspace_link=None, final_mark=0)),
-    (checkpoint_service.get_all_checkpoints_on_team, "team_id", 4, Checkpoint(team_id=4, number=1, date=None, project_state=None, mark=8, video_link=None, presentation_link=None, university_mark=None, university_comment=None)),
-]
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("getter, param_name, param_value, sample", FILTER_SCENARIOS)
-async def test_filter_functions_return_filtered_results(mock_session, result_stub, getter, param_name, param_value, sample):
-    mock_session.execute.return_value = result_stub([sample])
-
-    results = await getter(mock_session, **{param_name: param_value})
-
-    assert len(results) == 1
-    assert results[0] == sample
-    mock_session.execute.assert_awaited_once()
-    mock_session.execute.reset_mock()
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("getter, param_name, param_value, sample", FILTER_SCENARIOS)
-async def test_filter_functions_return_empty_list_when_no_matches(mock_session, result_stub, getter, param_name, param_value, sample):
-    mock_session.execute.return_value = result_stub([])
-
-    results = await getter(mock_session, **{param_name: 999})
-
-    assert results == []
-    mock_session.execute.assert_awaited_once()
-    mock_session.execute.reset_mock()

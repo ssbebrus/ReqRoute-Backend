@@ -1,20 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-
+from app.utils.filtering import filter_and_paginate
 from app.models.case import Case
 from app.schemas.case import CaseCreate, CaseUpdate
 
-async def get_all_cases(db: AsyncSession):
-    result = await db.execute(select(Case))
-    return result.scalars().all()
-
-async def get_all_cases_on_term(db: AsyncSession, term_id: int):
-    result = await db.execute(select(Case).where(Case.term_id == term_id))
-    return result.scalars().all()
-
-async def get_all_cases_on_user(db: AsyncSession, user_id: int):
-    result = await db.execute(select(Case).where(Case.user_id == user_id))
-    return result.scalars().all()
+async def get_cases_filtered(db: AsyncSession, params: dict):
+    return await filter_and_paginate(Case, db, params)
 
 async def get_case(db: AsyncSession, case_id: int):
     result = await db.execute(select(Case).where(Case.id == case_id))

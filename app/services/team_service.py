@@ -4,14 +4,11 @@ from sqlalchemy import select
 from app.models.team import Team
 
 from app.schemas.team import TeamCreate, TeamUpdate
+from app.utils.filtering import filter_and_paginate
 
-async def get_all_teams(db: AsyncSession):
-    result = await db.execute(select(Team))
-    return result.scalars().all()
 
-async def get_all_teams_on_case(db: AsyncSession, case_id: int):
-    result = await db.execute(select(Team).where(Team.case_id == case_id))
-    return result.scalars().all()
+async def get_teams_filtered(db: AsyncSession, params: dict):
+    return await filter_and_paginate(Team, db, params)
 
 async def get_team(db: AsyncSession, team_id: int):
     result = await db.execute(select(Team).where(Team.id == team_id))

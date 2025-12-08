@@ -3,10 +3,11 @@ from sqlalchemy import select
 
 from app.models.term import Term
 from app.schemas.term import TermCreate, TermUpdate
+from app.utils.filtering import filter_and_paginate
 
-async def get_all_terms(db: AsyncSession):
-    result = await db.execute(select(Term))
-    return result.scalars().all()
+
+async def get_terms_filtered(db: AsyncSession, params: dict):
+    return await filter_and_paginate(Term, db, params)
 
 async def get_term(db: AsyncSession, term_id: int):
     result = await db.execute(select(Term).where(Term.id == term_id))

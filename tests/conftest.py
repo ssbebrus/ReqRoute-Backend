@@ -39,13 +39,13 @@ class ResultStub:
 
 @pytest.fixture
 def mock_session():
-    """AsyncSession stand‑in with the methods our services touch."""
     session = AsyncMock()
     session.add = MagicMock()
     session.execute = AsyncMock()
     session.commit = AsyncMock()
     session.refresh = AsyncMock()
     session.delete = AsyncMock()
+    session.add_all = MagicMock()
     return session
 
 

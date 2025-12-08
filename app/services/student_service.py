@@ -4,10 +4,11 @@ from sqlalchemy import select
 from app.models.student import Student
 
 from app.schemas.student import StudentCreate, StudentUpdate
+from app.utils.filtering import filter_and_paginate
 
-async def get_all_students(db: AsyncSession):
-    result = await db.execute(select(Student))
-    return result.scalars().all()
+
+async def get_students_filtered(db: AsyncSession, params: dict):
+    return await filter_and_paginate(Student, db, params)
 
 async def get_student(db: AsyncSession, student_id: int):
     result = await db.execute(select(Student).where(Student.id == student_id))

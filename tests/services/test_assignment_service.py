@@ -8,28 +8,6 @@ from app.services import assignment_service
 
 
 @pytest.mark.asyncio
-async def test_get_all_assignments_returns_scalars(mock_session, result_stub):
-    stored = [Assignment(meeting_id=1, text="Discuss scope", completed=False)]
-    mock_session.execute.return_value = result_stub(stored)
-
-    assignments = await assignment_service.get_all_assignments(mock_session)
-
-    assert assignments == stored
-    mock_session.execute.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_get_all_assignments_on_meeting_filters(mock_session, result_stub):
-    stored = [Assignment(meeting_id=2, text="Prepare deck", completed=None)]
-    mock_session.execute.return_value = result_stub(stored)
-
-    assignments = await assignment_service.get_all_assignments_on_meeting(mock_session, meeting_id=2)
-
-    assert assignments[0].meeting_id == 2
-    mock_session.execute.assert_awaited_once()
-
-
-@pytest.mark.asyncio
 async def test_create_assignment_persists_entity(mock_session):
     payload = AssignmentCreate(meeting_id=3, text="Draft plan", completed=False)
 

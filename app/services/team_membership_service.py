@@ -4,22 +4,15 @@ from sqlalchemy import select
 from app.models.team_membership import TeamMembership
 
 from app.schemas.team_membership import TeamMembershipCreate, TeamMembershipUpdate
+from app.utils.filtering import filter_and_paginate
 
-async def get_all_memberships(db: AsyncSession):
-    result = await db.execute(select(TeamMembership))
-    return result.scalars().all()
+
+async def get_memberships_filtered(db: AsyncSession, params: dict):
+    return await filter_and_paginate(TeamMembership, db, params)
 
 async def get_membership(db: AsyncSession, membership_id: int):
     result = await db.execute(select(TeamMembership).where(TeamMembership.id == membership_id))
     return result.scalar_one_or_none()
-
-async def get_memberships_student(db: AsyncSession, student_id: int):
-    result = await db.execute(select(TeamMembership).where(TeamMembership.student_id == student_id))
-    return result.scalars().all()
-
-async def get_memberships_team(db: AsyncSession, team_id: int):
-    result = await db.execute(select(TeamMembership).where(TeamMembership.team_id == team_id))
-    return result.scalars().all()
 
 async def create_membership(db: AsyncSession, data: TeamMembershipCreate):
     new_membership = TeamMembership(**data.model_dump())

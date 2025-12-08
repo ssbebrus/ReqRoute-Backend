@@ -13,3 +13,6 @@ class Team(Base):
 
     team_memberships = relationship("TeamMembership", back_populates="team")
     checkpoints = relationship("Checkpoint", back_populates="team")
+    case = relationship("Case", back_populates="teams")
+    meetings = relationship("Meeting", back_populates="team")
+    meeting_schedules = relationship("MeetingSchedule", back_populates="team")

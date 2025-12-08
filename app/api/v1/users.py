@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_session
+from app.schemas.paginated import PaginatedResponse
 from app.schemas.user import UserCreate, UserUpdate, UserRead
 from app.services.user_service import (
-    get_all_users,
+    get_users_filtered,
     get_user,
     create_user,
     update_user,
@@ -13,9 +14,9 @@ import app.models
 
 router = APIRouter()
 
-@router.get("/", response_model=list[UserRead])
-async def list_users(db: AsyncSession = Depends(get_session)):
-    return await get_all_users(db)
+@router.get("/", response_model=PaginatedResponse[UserRead])
+async def list_users(request: Request, db: AsyncSession = Depends(get_session)):
+    return await get_users_filtered(db, dict(request.query_params))
 
 @router.get("/{user_id}", response_model=UserRead)
 async def read_user(user_id: int, db: AsyncSession = Depends(get_session)):
