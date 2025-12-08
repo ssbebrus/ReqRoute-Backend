@@ -20,3 +20,4 @@ class Case(Base):
 
     term = relationship("Term", back_populates="cases")
     user = relationship("User", back_populates="cases")
+    teams = relationship("Team", back_populates="case")

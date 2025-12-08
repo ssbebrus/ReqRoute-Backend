@@ -4,10 +4,11 @@ from sqlalchemy import select
 from app.models.user import User
 
 from app.schemas.user import UserCreate, UserUpdate
+from app.utils.filtering import filter_and_paginate
 
-async def get_all_users(db: AsyncSession):
-    result = await db.execute(select(User))
-    return result.scalars().all()
+
+async def get_users_filtered(db: AsyncSession, params: dict):
+    return await filter_and_paginate(User, db, params)
 
 async def get_user(db: AsyncSession, user_id: int):
     result = await db.execute(select(User).where(User.id == user_id))

@@ -8,28 +8,6 @@ from app.services import team_membership_service
 
 
 @pytest.mark.asyncio
-async def test_get_memberships_filtered_by_student(mock_session, result_stub):
-    memberships = [TeamMembership(student_id=1, team_id=2, role="Lead", group="A-1")]
-    mock_session.execute.return_value = result_stub(memberships)
-
-    result = await team_membership_service.get_memberships_student(mock_session, student_id=1)
-
-    assert result == memberships
-    mock_session.execute.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_get_memberships_filtered_by_team(mock_session, result_stub):
-    memberships = [TeamMembership(student_id=4, team_id=5, role=None, group="B-2")]
-    mock_session.execute.return_value = result_stub(memberships)
-
-    result = await team_membership_service.get_memberships_team(mock_session, team_id=5)
-
-    assert result == memberships
-    mock_session.execute.assert_awaited_once()
-
-
-@pytest.mark.asyncio
 async def test_create_membership_persists_entity(mock_session):
     payload = TeamMembershipCreate(student_id=3, team_id=6, role="Researcher", group="G-7")
 
@@ -66,20 +44,6 @@ async def test_delete_membership_invokes_session(monkeypatch, mock_session):
     assert deleted is entity
     mock_session.delete.assert_awaited_once_with(entity)
     assert mock_session.commit.await_count == 1
-
-
-@pytest.mark.asyncio
-async def test_get_all_memberships_returns_scalars(mock_session, result_stub):
-    stored = [
-        TeamMembership(student_id=1, team_id=2, role="Lead", group="A-1"),
-        TeamMembership(student_id=3, team_id=4, role="Member", group="B-2"),
-    ]
-    mock_session.execute.return_value = result_stub(stored)
-
-    memberships = await team_membership_service.get_all_memberships(mock_session)
-
-    assert memberships == stored
-    mock_session.execute.assert_awaited_once()
 
 
 @pytest.mark.asyncio

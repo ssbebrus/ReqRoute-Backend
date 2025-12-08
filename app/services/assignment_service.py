@@ -1,17 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-
+from app.utils.filtering import  filter_and_paginate
 from app.models.assignment import Assignment
 
 from app.schemas.assignment import AssignmentCreate, AssignmentUpdate
 
-async def get_all_assignments(db: AsyncSession):
-    result = await db.execute(select(Assignment))
-    return result.scalars().all()
-
-async def get_all_assignments_on_meeting(db: AsyncSession, meeting_id: int):
-    result = await db.execute(select(Assignment).where(Assignment.meeting_id == meeting_id))
-    return result.scalars().all()
+async def get_assignments_filtered(db: AsyncSession, params: dict):
+    return await filter_and_paginate(Assignment, db, params)
 
 async def get_assignment(db: AsyncSession, assignment_id: int):
     result = await db.execute(select(Assignment).where(Assignment.id == assignment_id))

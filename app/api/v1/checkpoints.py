@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_session
 from app.schemas.checkpoint import CheckpointCreate, CheckpointUpdate, CheckpointRead
+from app.schemas.paginated import PaginatedResponse
 from app.services.checkpoint_service import (
-    get_all_checkpoints,
-    get_all_checkpoints_on_team,
+    get_checkpoints_filtered,
     get_checkpoint,
     create_checkpoint,
     update_checkpoint,
@@ -14,13 +14,9 @@ import app.models
 
 router = APIRouter()
 
-@router.get("/", response_model=list[CheckpointRead])
-async def list_checkpoints(db: AsyncSession = Depends(get_session)):
-    return await get_all_checkpoints(db)
-
-@router.get("/team/{team_id}", response_model=list[CheckpointRead])
-async def list_checkpoints_on_team(team_id: int, db: AsyncSession = Depends(get_session)):
-    return await get_all_checkpoints_on_team(db, team_id)
+@router.get("/", response_model=PaginatedResponse[CheckpointRead])
+async def list_checkpoints(request: Request, db: AsyncSession = Depends(get_session)):
+    return await get_checkpoints_filtered(db, dict(request.query_params))
 
 @router.get("/{checkpoint_id}", response_model=CheckpointRead)
 async def read_checkpoint(checkpoint_id: int, db: AsyncSession = Depends(get_session)):

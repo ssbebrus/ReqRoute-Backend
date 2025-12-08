@@ -1,11 +1,11 @@
 import datetime
 from typing import Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CheckpointBase(BaseModel):
     team_id: int
-    number: int
+    number: int = Field(ge=1, le=3)
     date: Optional[datetime.date] = None
     project_state: Optional[str] = None
     mark: int

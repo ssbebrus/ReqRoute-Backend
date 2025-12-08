@@ -4,14 +4,11 @@ from sqlalchemy import select
 from app.models.checkpoint import Checkpoint
 
 from app.schemas.checkpoint import CheckpointCreate, CheckpointUpdate
+from app.utils.filtering import filter_and_paginate
 
-async def get_all_checkpoints(db: AsyncSession):
-    result = await db.execute(select(Checkpoint))
-    return result.scalars().all()
 
-async def get_all_checkpoints_on_team(db: AsyncSession, team_id: int):
-    result = await db.execute(select(Checkpoint).where(Checkpoint.team_id == team_id))
-    return result.scalars().all()
+async def get_checkpoints_filtered(db: AsyncSession, params: dict):
+    return await filter_and_paginate(Checkpoint, db, params)
 
 async def get_checkpoint(db: AsyncSession, checkpoint_id: int):
     result = await db.execute(select(Checkpoint).where(Checkpoint.id == checkpoint_id))

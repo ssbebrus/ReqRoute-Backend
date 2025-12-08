@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_session
+from app.schemas.paginated import PaginatedResponse
 from app.schemas.team_membership import TeamMembershipCreate, TeamMembershipUpdate, TeamMembershipRead
 from app.services.team_membership_service import (
-    get_all_memberships,
-    get_memberships_team,
-    get_memberships_student,
+    get_memberships_filtered,
     get_membership,
     create_membership,
     update_membership,
@@ -15,9 +14,9 @@ import app.models
 
 router = APIRouter()
 
-@router.get("/", response_model=list[TeamMembershipRead])
-async def list_team_memberships(db: AsyncSession = Depends(get_session)):
-    return await get_all_memberships(db)
+@router.get("/", response_model=PaginatedResponse[TeamMembershipRead])
+async def list_team_memberships(request: Request, db: AsyncSession = Depends(get_session)):
+    return await get_memberships_filtered(db, dict(request.query_params))
 
 @router.get("/{team_membership_id}", response_model=TeamMembershipRead)
 async def read_team_membership(team_membership_id: int, db: AsyncSession = Depends(get_session)):
@@ -25,14 +24,6 @@ async def read_team_membership(team_membership_id: int, db: AsyncSession = Depen
     if not team_membership:
         raise HTTPException(status_code=404, detail="TeamMembership not found")
     return team_membership
-
-@router.get("/student/{student_id}", response_model=list[TeamMembershipRead])
-async def read_memberships_student(student_id: int, db: AsyncSession = Depends(get_session)):
-    return await get_memberships_student(db, student_id)
-
-@router.get("/team/{team_id}", response_model=list[TeamMembershipRead])
-async def read_student_memberships(team_id: int, db: AsyncSession = Depends(get_session)):
-    return await get_memberships_team(db, team_id)
 
 @router.post("/", response_model=TeamMembershipRead, status_code=status.HTTP_201_CREATED)
 async def add_team_membership(data: TeamMembershipCreate, db: AsyncSession = Depends(get_session)):

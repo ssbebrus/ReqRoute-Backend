@@ -4,6 +4,7 @@ from .case import Case
 from .student import Student
 from .term import Term
 from .meeting import MeetingUser, Meeting
+from .meeting_schedule import MeetingSchedule
 from .assignment import Assignment
 from .checkpoint import Checkpoint
 from .user import User

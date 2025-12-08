@@ -8,17 +8,6 @@ from app.services import user_service
 
 
 @pytest.mark.asyncio
-async def test_get_all_users_returns_scalars(mock_session, result_stub):
-    stored = [User(full_name="Jane Doe", email="jane@example.com", password="secret")]
-    mock_session.execute.return_value = result_stub(stored)
-
-    users = await user_service.get_all_users(mock_session)
-
-    assert users == stored
-    mock_session.execute.assert_awaited_once()
-
-
-@pytest.mark.asyncio
 async def test_create_user_hashes_password(mock_session):
     payload = UserCreate(full_name="John Smith", email="john@example.com", password="pwd123")
 

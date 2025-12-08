@@ -1,26 +1,22 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_session
 from app.schemas.assignment import AssignmentCreate, AssignmentUpdate, AssignmentRead
 from app.services.assignment_service import (
-    get_all_assignments,
-    get_all_assignments_on_meeting,
+    get_assignments_filtered,
     get_assignment,
     create_assignment,
     update_assignment,
     delete_assignment
 )
+from app.schemas.paginated import PaginatedResponse
 import app.models
 
 router = APIRouter()
 
-@router.get("/", response_model=list[AssignmentRead])
-async def list_assignments(db: AsyncSession = Depends(get_session)):
-    return await get_all_assignments(db)
-
-@router.get("/meeting/{meeting_id}", response_model=list[AssignmentRead])
-async def list_assignments_on_meeting(meeting_id: int, db: AsyncSession = Depends(get_session)):
-    return await get_all_assignments_on_meeting(db, meeting_id)
+@router.get("/", response_model=PaginatedResponse[AssignmentRead])
+async def list_assignments(request: Request, db: AsyncSession = Depends(get_session)):
+    return await get_assignments_filtered(db, dict(request.query_params))
 
 @router.get("/{assignment_id}", response_model=AssignmentRead)
 async def read_assignment(assignment_id: int, db: AsyncSession = Depends(get_session)):
