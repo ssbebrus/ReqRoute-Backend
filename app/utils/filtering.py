@@ -20,8 +20,8 @@ def apply_filters(model, stmt: Select, params: dict):
                 )
             continue
         column = getattr(model, key, None)
-        value = column.type.python_type(value)
         if column is not None:
+            value = column.type.python_type(value)
             stmt = stmt.where(column == value)
     return stmt
 
