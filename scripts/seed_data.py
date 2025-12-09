@@ -18,15 +18,15 @@ from app.models.user import User
 def _make_terms():
     return [
         Term(
-            start_date=date(2024, 9, 1),
-            end_date=date(2025, 1, 31),
-            year=2024,
+            start_date=date(2025, 9, 1),
+            end_date=date(2025, 12, 31),
+            year=2025,
             season=SeasonEnum.autumn,
         ),
         Term(
-            start_date=date(2025, 2, 1),
-            end_date=date(2025, 6, 30),
-            year=2025,
+            start_date=date(2026, 2, 1),
+            end_date=date(2026, 5, 31),
+            year=2026,
             season=SeasonEnum.spring,
         ),
     ]

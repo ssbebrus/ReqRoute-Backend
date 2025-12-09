@@ -8,7 +8,7 @@ class Meeting(Base):
     __tablename__ = "meetings"
 
     team_id: Mapped[int] = mapped_column(ForeignKey("teams.id"))
-    previous_meeting_id: Mapped[int | None] = mapped_column(ForeignKey("meetings.id"))
+    previous_meeting_id: Mapped[int | None] = mapped_column(ForeignKey("meetings.id", ondelete="SET NULL"))
     schedule_id: Mapped[int | None] = mapped_column(ForeignKey("meeting_schedules.id"))
     recording_link: Mapped[str | None]
     date_time: Mapped[datetime]
