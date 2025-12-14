@@ -13,7 +13,7 @@ from app.models.team import Team
 from app.models.team_membership import TeamMembership
 from app.models.term import Term, SeasonEnum
 from app.models.user import User
-
+import hashlib
 
 def _make_terms():
     return [
@@ -37,17 +37,17 @@ def _make_users():
         User(
             full_name="Alice Owner",
             email="alice@example.com",
-            password="demo",
+            password=hashlib.sha256("pass".encode('utf-8')).hexdigest(),
         ),
         User(
             full_name="Bob Reviewer",
             email="bob@example.com",
-            password="demo",
+            password=hashlib.sha256("pass".encode('utf-8')).hexdigest(),
         ),
         User(
             full_name="Charlie Mentor",
             email="charlie@example.com",
-            password="demo",
+            password=hashlib.sha256("pass".encode('utf-8')).hexdigest(),
         ),
     ]
 
