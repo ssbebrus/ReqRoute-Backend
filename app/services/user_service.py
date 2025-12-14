@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.models.user import User
-
+import hashlib
 from app.schemas.user import UserCreate, UserUpdate
 from app.utils.filtering import filter_and_paginate
 
@@ -16,7 +16,7 @@ async def get_user(db: AsyncSession, user_id: int):
 
 async def create_user(db: AsyncSession, data: UserCreate):
     full_data = data.model_dump()
-    full_data['password'] = hash(full_data['password'])
+    full_data['password'] = hashlib.sha256(full_data['password'].encode('utf-8')).hexdigest()
     new_user = User(**full_data)
     db.add(new_user)
     await db.commit()
