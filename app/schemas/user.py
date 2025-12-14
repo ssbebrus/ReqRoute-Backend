@@ -13,6 +13,10 @@ class UserUpdate(UserBase):
     full_name: Optional[str]
     email: Optional[str]
 
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
 class UserRead(UserBase):
     id: int
 

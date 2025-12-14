@@ -1,9 +1,17 @@
-from fastapi import FastAPI
-from app.api.v1 import cases, terms, teams, students, team_memberships, users, meetings, assignments, checkpoints
+from authx.exceptions import AuthXException
+from fastapi import FastAPI, HTTPException, status
+from app.api.v1 import auth, cases, terms, teams, students, team_memberships, users, meetings, assignments, checkpoints
 from app.db.session import init_db
 
 app = FastAPI(title="ReqRoute API", version="1.0")
 
+@app.exception_handler(AuthXException)
+async def authx_exception_handler(request, exc: AuthXException):
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Authentication required"
+    )
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
 app.include_router(cases.router, prefix="/api/v1/cases", tags=["Cases"])
 app.include_router(terms.router, prefix="/api/v1/terms", tags=["Terms"])
 app.include_router(teams.router, prefix="/api/v1/teams", tags=["Teams"])
